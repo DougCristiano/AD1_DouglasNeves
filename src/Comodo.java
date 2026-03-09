@@ -30,7 +30,7 @@ public class Comodo {
     }
     Dispositivo buscarDispositivo(String nomeDispositivo) {
         for (int i = 0; i < numeroTotalDispositivos; i++) {
-            if (dispositivos[i].nome.equals(nomeDispositivo)) {
+            if (dispositivos[i].nome.equalsIgnoreCase(nomeDispositivo)) {
                 return dispositivos[i];
             }
         }
