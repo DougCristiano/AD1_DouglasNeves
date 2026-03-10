@@ -72,32 +72,49 @@ public class SmartHome {
         }
 
         Dispositivo[] todos = new Dispositivo[total];
-        int idx = 0;
+        int index = 0;
         for (int i = 0; i < numeroComodos; i++) {
             for (int j = 0; j < comodos[i].numeroTotalDispositivos; j++) {
-                todos[idx++] = comodos[i].dispositivos[j];
+                todos[index++] = comodos[i].dispositivos[j];
+            }
+        }
+        int totalComConsumo = 0;
+        for (int i = 0; i < total; i++) {
+            if (todos[i].calcularConsumoHora() > 0) {
+                totalComConsumo++;
             }
         }
 
-        for (int i = 0; i < total - 1; i++) {
-            for (int j = 0; j < total - 1 - i; j++) {
-                if (todos[j].calcularConsumoHora() < todos[j + 1].calcularConsumoHora()) {
-                    Dispositivo temp = todos[j];
-                    todos[j] = todos[j + 1];
-                    todos[j + 1] = temp;
+        Dispositivo[] comConsumo = new Dispositivo[totalComConsumo];
+        int indexconsumo = 0;
+        for (int i = 0; i < total; i++) {
+            if (todos[i].calcularConsumoHora() > 0) {
+                comConsumo[indexconsumo++] = todos[i];
+            }
+        }
+        for (int i = 0; i < totalComConsumo - 1; i++) {
+            for (int j = 0; j < totalComConsumo - 1 - i; j++) {
+                if (comConsumo[j].calcularConsumoHora() < comConsumo[j + 1].calcularConsumoHora()) {
+                    Dispositivo temp = comConsumo[j];
+                    comConsumo[j] = comConsumo[j + 1];
+                    comConsumo[j + 1] = temp;
                 }
             }
         }
 
         System.out.println("\n Maiores Consumidores do Dia:");
-        for (int i = 0; i < total; i++) {
-            System.out.printf("%d) %s (%s) - %.2f kWh%n",
-                    i + 1, todos[i].nome, todos[i].comodo.nome, todos[i].calcularConsumoHora());
+        if (totalComConsumo == 0) {
+            System.out.println("Nenhum dispositivo foi utilizado.");
+        } else {
+            for (int i = 0; i < totalComConsumo; i++) {
+                System.out.printf("%d) %s (%s) - %.2f kWh%n",
+                        i + 1, comConsumo[i].nome, comConsumo[i].comodo.nome, comConsumo[i].calcularConsumoHora());
+            }
         }
     }
 
     void listarCapacidadesComodos() {
-        System.out.println("\n=== Capacidades dos Cômodos ===");
+        System.out.println("\n Capacidades dos Cômodos:");
         if (numeroComodos == 0) {
             System.out.println("Nenhum cômodo cadastrado.");
         } else {
