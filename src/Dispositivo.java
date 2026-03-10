@@ -29,14 +29,17 @@ public class Dispositivo {
         }
     }
     boolean registrarTempoUso(float horas) {
-        if (ligado) {
-            tempoHoraUso += horas;
-            System.out.println("Tempo de uso registrado: " + horas + " horas.");
-            return true;
-        } else {
+        if (!ligado) {
             System.out.println("Dispositivo " + nome + " está desligado. Não é possível registrar tempo de uso.");
             return false;
         }
+        if (horas <= 0) {
+            System.out.println("Tempo de uso inválido: o valor deve ser maior que zero.");
+            return false;
+        }
+        tempoHoraUso += horas;
+        System.out.println("Tempo de uso registrado: " + horas + " horas.");
+        return true;
     }
     float calcularConsumoHora() {
         return consumoHora * tempoHoraUso;

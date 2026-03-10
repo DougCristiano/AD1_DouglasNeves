@@ -11,10 +11,17 @@ public class Comodo {
         this.capacidadeMax = capacidadeMax;
     }
     boolean adicionarDispositivo(Dispositivo dispositivo) {
+        for (int i = 0; i < numeroTotalDispositivos; i++) {
+            if (dispositivos[i].nome.equalsIgnoreCase(dispositivo.nome)) {
+                System.out.println("Dispositivo '" + dispositivo.nome + "' já existe no cômodo " + nome + ".");
+                return false;
+            }
+        }
         if (numeroTotalDispositivos < dispositivos.length) {
+            dispositivo.comodo = this;
             dispositivos[numeroTotalDispositivos] = dispositivo;
             numeroTotalDispositivos++;
-            System.out.println("Dispositivo " + dispositivo.nome + " adicionado ao cômodo " + nome + ".");
+            System.out.println("Dispositivo '" + dispositivo.nome + "' adicionado ao cômodo " + nome + ".");
             return true;
         } else {
             System.out.println("Capacidade máxima de dispositivos atingida para o cômodo " + nome + ".");
