@@ -1,13 +1,13 @@
 public class SmartHome {
     Comodo[] comodos;
     int numeroComodos;
-    int capacidadeMaxima;
+    int capacidadeComodosMax;
     static final float taxaEnergia = 1.15f; 
 
-    SmartHome(int capacidadeMaxima) {
-        this.comodos = new Comodo[capacidadeMaxima];
+    SmartHome(int capacidadeComodosMax) {
+        this.comodos = new Comodo[capacidadeComodosMax];
         this.numeroComodos = 0;
-        this.capacidadeMaxima = capacidadeMaxima;
+        this.capacidadeComodosMax = capacidadeComodosMax;
     }
 
     boolean cadastrarComodo(String nome, int capacidadeDispositivosMaxima) {
@@ -17,7 +17,7 @@ public class SmartHome {
                 return false;
             }
         }
-        if (numeroComodos < capacidadeMaxima) {
+        if (numeroComodos < capacidadeComodosMax) {
             comodos[numeroComodos] = new Comodo(nome, capacidadeDispositivosMaxima);
             numeroComodos++;
             System.out.println("Cômodo '" + nome + "' cadastrado com sucesso!");
@@ -48,7 +48,7 @@ public class SmartHome {
     }
 
     void exibirResumoDia() {
-        System.out.println("\n=== Resumo do Dia ===");
+        System.out.println("\n Resumo do Dia:");
         for (int i = 0; i < numeroComodos; i++) {
             Comodo comodo = comodos[i];
             System.out.println("\nCômodo: " + comodo.nome);
@@ -79,7 +79,6 @@ public class SmartHome {
             }
         }
 
-        // Bubble sort em ordem decrescente de consumo diário
         for (int i = 0; i < total - 1; i++) {
             for (int j = 0; j < total - 1 - i; j++) {
                 if (todos[j].calcularConsumoHora() < todos[j + 1].calcularConsumoHora()) {
@@ -95,5 +94,31 @@ public class SmartHome {
             System.out.printf("%d) %s (%s) - %.2f kWh%n",
                     i + 1, todos[i].nome, todos[i].comodo.nome, todos[i].calcularConsumoHora());
         }
+    }
+
+    void listarCapacidadesComodos() {
+        System.out.println("\n=== Capacidades dos Cômodos ===");
+        if (numeroComodos == 0) {
+            System.out.println("Nenhum cômodo cadastrado.");
+        } else {
+            for (int i = 0; i < numeroComodos; i++) {
+                Comodo comodo = comodos[i];
+                int vagas = comodo.capacidadeMax - comodo.numeroTotalDispositivos;
+                System.out.println("\nCômodo: " + comodo.nome);
+                System.out.println("  Capacidade máxima: " + comodo.capacidadeMax + " dispositivos");
+                System.out.println("  Dispositivos atualmente: " + comodo.numeroTotalDispositivos);
+                System.out.println("  Vagas disponíveis: " + vagas);
+                if (comodo.numeroTotalDispositivos > 0) {
+                    System.out.println("  Dispositivos:");
+                    for (int j = 0; j < comodo.numeroTotalDispositivos; j++) {
+                        System.out.println("    - " + comodo.dispositivos[j].nome + 
+                                           " (Consumo: " + comodo.dispositivos[j].consumoHora + " kW)");
+                    }
+                }
+            }
+        }
+        System.out.println("\nCapacidade máxima de cômodos da residência: " + capacidadeComodosMax);
+        System.out.println("Cômodos cadastrados: " + numeroComodos);
+        System.out.println("Cômodos disponíveis: " + (capacidadeComodosMax - numeroComodos));
     }
 }

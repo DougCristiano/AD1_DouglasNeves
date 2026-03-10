@@ -17,6 +17,7 @@ public class Comodo {
                 return false;
             }
         }
+        
         if (numeroTotalDispositivos < dispositivos.length) {
             dispositivo.comodo = this;
             dispositivos[numeroTotalDispositivos] = dispositivo;

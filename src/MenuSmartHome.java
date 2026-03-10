@@ -1,11 +1,36 @@
 import java.util.Scanner;
+import java.util.Locale;
 
 public class MenuSmartHome {
-    Scanner scanner = new Scanner(System.in);
+    Scanner scanner = new Scanner(System.in).useLocale(Locale.US);
     SmartHome smartHome;
 
     MenuSmartHome(SmartHome smartHome) {
         this.smartHome = smartHome;
+    }
+    
+    private int lerInteiroComErro(String mensagem) {
+        while (true) {
+            try {
+                System.out.print(mensagem);
+                return scanner.nextInt();
+            } catch (java.util.InputMismatchException e) {
+                System.out.println("Erro: Digite um número inteiro válido.");
+                scanner.nextLine();
+            }
+        }
+    }
+    
+    private float lerFloatComErro(String mensagem) {
+        while (true) {
+            try {
+                System.out.print(mensagem);
+                return scanner.nextFloat();
+            } catch (java.util.InputMismatchException e) {
+                System.out.println("Erro: Digite um número decimal válido (use ponto como separador).");
+                scanner.nextLine();
+            }
+        }
     }
     void exibirMenu() {
         int opcao;
@@ -18,9 +43,9 @@ public class MenuSmartHome {
             System.out.println("5. Registrar tempo de uso de um dispositivo ligado");
             System.out.println("6. Exibir resumo do dia");
             System.out.println("7. Listar maiores consumidores");
-            System.out.println("8. Sair");
-            System.out.print("Escolha uma opção: ");
-            opcao = scanner.nextInt();
+            System.out.println("8. Listar capacidades de cômodos");
+            System.out.println("9. Sair");
+            opcao = lerInteiroComErro("Escolha uma opção: ");
             scanner.nextLine(); 
 
             switch (opcao) {
@@ -46,19 +71,21 @@ public class MenuSmartHome {
                     smartHome.listarMaioresConsumidores();
                     break;
                 case 8:
-                    System.out.println("Saindo...");
+                    listarCapacidadesComodos();
+                    break;
+                case 9:
+                    System.out.println("Saindo. Obrigado por usar o Smart Home!");
                     break;
                 default:
                     System.out.println("Opção inválida! Tente novamente.");
             }
-        } while (opcao != 8);
+        } while (opcao != 9);
     }
     
     void cadastrarComodo() {
         System.out.print("Nome do cômodo: ");
         String nome = scanner.nextLine();
-        System.out.print("Capacidade máxima de dispositivos: ");
-        int capacidade = scanner.nextInt();
+        int capacidade = lerInteiroComErro("Capacidade máxima de dispositivos: ");
         scanner.nextLine();
         smartHome.cadastrarComodo(nome, capacidade);
     }
@@ -68,14 +95,18 @@ public class MenuSmartHome {
         String nomeComodo = scanner.nextLine();
         System.out.print("Nome do dispositivo: ");
         String nomeDispositivo = scanner.nextLine();
-        System.out.print("Consumo por hora (kW): ");
-        float consumo = scanner.nextFloat();
+        float consumo = lerFloatComErro("Consumo por hora (kW): ");
         scanner.nextLine();
         
         Comodo comodo = smartHome.buscarComodo(nomeComodo);
         if (comodo != null) {
             Dispositivo dispositivo = new Dispositivo(nomeDispositivo, consumo);
-            comodo.adicionarDispositivo(dispositivo);
+            boolean adicionado = comodo.adicionarDispositivo(dispositivo);
+            if (!adicionado) {
+                System.out.println("Falha ao adicionar dispositivo. Verifique a capacidade máxima do cômodo.");
+            }
+        } else {
+            System.out.println("Cômodo '" + nomeComodo + "' não encontrado.");
         }
     }
     
@@ -114,8 +145,7 @@ public class MenuSmartHome {
         String nomeComodo = scanner.nextLine();
         System.out.print("Nome do dispositivo: ");
         String nomeDispositivo = scanner.nextLine();
-        System.out.print("Tempo de uso (horas): ");
-        float tempoUso = scanner.nextFloat();
+        float tempoUso = lerFloatComErro("Tempo de uso (horas): ");
         scanner.nextLine();
         
         Comodo comodo = smartHome.buscarComodo(nomeComodo);
@@ -125,5 +155,9 @@ public class MenuSmartHome {
                 dispositivo.registrarTempoUso(tempoUso);
             }
         }
+    }
+    
+    void listarCapacidadesComodos() {
+        smartHome.listarCapacidadesComodos();
     }
 }
